@@ -1,11 +1,18 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import algorithms.Graph_Algo;
+
 import java.util.Set;
 
 import dataStructure.DGraph;
@@ -16,7 +23,9 @@ import dataStructure.nodedata;
 import utils.Point3D;
 import utils.StdDraw;
 
-public class Graph_GUI {
+public class Graph_GUI implements ActionListener, MouseListener {
+	
+
 	
 	public void drawFunctions(DGraph x) {
 		StdDraw.setCanvasSize(1000,1000);
@@ -30,10 +39,10 @@ public class Graph_GUI {
 		StdDraw.setScale(-100, 100);
 		Iterator<node_data> I= x.getV().iterator();
 		while(I.hasNext()) {
-			System.out.println("did");
+			//System.out.println("did");
 			node_data current=new nodedata((nodedata)I.next());
 			Point3D p=new Point3D(current.getLocation());
-			System.out.println(p);
+			//System.out.println(p);
 			StdDraw.point(p.x(), p.y());
 			StdDraw.setPenColor(Color.RED);
 			StdDraw.setPenRadius(0.5);
@@ -94,6 +103,8 @@ public class Graph_GUI {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
+		
+		
 		Point3D p1=new Point3D(10,15,0);
 		Point3D p2=new Point3D(50,60,0);
 		Point3D p3=new Point3D(90,40,0);
@@ -109,55 +120,83 @@ public class Graph_GUI {
 		nodedata e=new nodedata(5,p5,0,0);
 		nodedata f=new nodedata(6,p6,0,0);
 		
-		
-		HashMap<Integer, node_data> hashnodes=new HashMap<Integer, node_data> ();
-		hashnodes.put(a.getKey(), a);
-		hashnodes.put(b.getKey(), b);
-		hashnodes.put(c.getKey(), c);
-		hashnodes.put(d.getKey(), d);
-		hashnodes.put(e.getKey(), e);
-		hashnodes.put(f.getKey(), f);
-		
-		edge_data aa=new edgedata(a,b,10,0);
-		edge_data bb=new edgedata(b,c,20,0);
-		edge_data cc=new edgedata(c,a,30,0);
-		edge_data dd=new edgedata(a,d,40,0);
-		edge_data eb=new edgedata(e,b,8,0);
-		edge_data fe=new edgedata(f,e,5,0);
-		
-		HashMap<Integer, edge_data>hash_a=new HashMap<Integer, edge_data>();
-		HashMap<Integer, edge_data>hash_b=new HashMap<Integer, edge_data>();
-		HashMap<Integer, edge_data>hash_c=new HashMap<Integer, edge_data>();
-		HashMap<Integer, edge_data>hash_d=new HashMap<Integer, edge_data>();
-		HashMap<Integer, edge_data>hash_e=new HashMap<Integer, edge_data>();
-		HashMap<Integer, edge_data>hash_f=new HashMap<Integer, edge_data>();
-		
-		hash_a.put(aa.getDest(), aa);
-		hash_b.put(bb.getDest(), bb);
-		hash_c.put(cc.getDest(), cc);
-		hash_a.put(dd.getDest(), dd);
-		hash_e.put(eb.getDest(), eb);
-		hash_e.put(fe.getDest(), fe);
-		
-		
 		DGraph x=new DGraph();
-		HashMap<Integer, HashMap<Integer, edge_data>>hashedges=new HashMap<Integer, HashMap<Integer, edge_data>>();
 		
-		hashedges.put(a.getKey(), hash_a);
-		hashedges.put(b.getKey(),hash_b);
-		hashedges.put(c.getKey(),hash_c);
-		hashedges.put(d.getKey(),hash_d);
-		hashedges.put(e.getKey(),hash_e);
-		hashedges.put(f.getKey(),hash_f);
-		x.setHashnodes(hashnodes);
-		x.setHashedges(hashedges);
+		x.addNode(a);
+		x.addNode(b);
+		x.addNode(c);
+		x.addNode(d);
+		x.addNode(e);
+		x.addNode(f);
 		
-	
+		x.connect(a.getKey(), b.getKey(), 80);
+		x.connect(b.getKey(), d.getKey(), 10);
+		x.connect(c.getKey(), a.getKey(), 10);
+		x.connect(a.getKey(), e.getKey(), 10);
+		x.connect(b.getKey(), e.getKey(), 10);
+		x.connect(e.getKey(), b.getKey(), 10);
+		x.connect(f.getKey(), c.getKey(), 10);
+		
+
+		
+		Graph_Algo test=new Graph_Algo(x);
+		System.out.println(x.getCountedgeg());
 		Graph_GUI g=new Graph_GUI();
+		//g.drawFunctions(x);
+		//System.out.println(x.removeNode(6));
+		System.out.println(x.removeEdge(3, 6));
+		x.connect(4, 6, 20);
+		System.out.println(test.isConnected());
+		System.out.println(test.shortestPathDist(1,6));
+		System.out.println(test.shortestPath(1,6));
+		
+		//g.drawFunctions(x);
+		//x.removeEdge(6, 3);
+		x.removeEdge(4, 6);
+		System.out.println(test.shortestPath(1,6));
+		//x.removeNode(2);
 		g.drawFunctions(x);
+		System.out.println("done");
 		
 		
 		
+		
+		
+		
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Graph_Algo g=new Graph_Algo(null);
+		String action=e.getActionCommand();
+		if(action.equals("short pass")) {
+			System.out.println(g.shortestPath(1, 3));
+		}
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -710,19 +710,53 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.pack();
 		frame.requestFocusInWindow();
 		frame.setVisible(true);
+		
 	}
 
 	// create the menu bar (changed to private)
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");
+		JMenu menu = new JMenu("Menu");
+		JMenu menu2 = new JMenu("Function");
+		JMenu menu3 = new JMenu("creaters info");
 		menuBar.add(menu);
-		JMenuItem menuItem1 = new JMenuItem(" Save...   ");
+		menuBar.add(menu2);
+		menuBar.add(menu3);
+		JMenuItem menuItem1 = new JMenuItem("Save...");
+		JMenuItem menuItem2 = new JMenuItem("Load...");
+		JMenuItem menuItem3 = new JMenuItem("short pass");
+		JMenuItem menuItem4 = new JMenuItem("connect between");
+		JMenuItem menuItem5 = new JMenuItem("Tsp");
+		JMenuItem menuItem6 = new JMenuItem("is connect");
+		JMenuItem menuItem7 = new JMenuItem("remove edge");
+		JMenuItem menuItem8 = new JMenuItem("remove Node");
+		JMenuItem menuItem9 = new JMenuItem("picture");
+		
 		menuItem1.addActionListener(std);
+		menuItem2.addActionListener(std);
+//		menuItem3.addActionListener(mouseLock);
+//		menuItem4.addActionListener(std);
+//		menuItem5.addActionListener(std);
+//		menuItem6.addActionListener(std);
+//		menuItem7.addActionListener(std);
+//		menuItem8.addActionListener(std);
+//		menuItem9.addActionListener(std);
+		
 		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		
+		
 		menu.add(menuItem1);
+		menu.add(menuItem2);
+		menu2.add(menuItem3);
+		menu2.add(menuItem4);
+		menu2.add(menuItem5);
+		menu2.add(menuItem6);
+		menu2.add(menuItem7);
+		menu2.add(menuItem8);
+		menu3.add(menuItem9);
 		return menuBar;
+		
 	}
 
 

@@ -130,13 +130,14 @@ public class DGraph implements graph{
 			remove=new nodedata((nodedata)hashnodes.get(key));
 			hashnodes.remove(key);
 			hashedges.remove(key);
-			Iterator I=hashedges.entrySet().iterator();
-			while(I.hasNext()) {
-				HashMap<Integer,edge_data> current=new HashMap<Integer,edge_data>( (HashMap<Integer,edge_data>) I.next());
-				current.remove(key); 
+			Collection<node_data> node=this.getV();
+			Iterator J=node.iterator();
+			while(J.hasNext()) {
+			   nodedata current=(nodedata) J.next();			
+			   HashMap<Integer,edge_data> hashcurrent=this.getHashedges().get(current.getKey());
+			   hashcurrent.remove(key);
 
 			}
-			
 		}
 		return remove;
 
@@ -162,7 +163,7 @@ public class DGraph implements graph{
 		return remove; 
 	}
 
-	
+
 	@Override
 	public int nodeSize() {
 		// TODO Auto-generated method stub
