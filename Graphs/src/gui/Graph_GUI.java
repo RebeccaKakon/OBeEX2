@@ -8,6 +8,8 @@ import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -133,10 +135,12 @@ public class Graph_GUI implements ActionListener, MouseListener {
 		x.connect(b.getKey(), d.getKey(), 10);
 		x.connect(c.getKey(), a.getKey(), 10);
 		x.connect(a.getKey(), e.getKey(), 10);
-		x.connect(b.getKey(), e.getKey(), 10);
+		
 		x.connect(e.getKey(), b.getKey(), 10);
 		x.connect(f.getKey(), c.getKey(), 10);
-		
+		x.connect(d.getKey(), f.getKey(), 40);
+		x.connect(e.getKey(), c.getKey(), 50);
+		x.connect(c.getKey(), b.getKey(), 5);
 
 		
 		Graph_Algo test=new Graph_Algo(x);
@@ -152,12 +156,33 @@ public class Graph_GUI implements ActionListener, MouseListener {
 		
 		//g.drawFunctions(x);
 		//x.removeEdge(6, 3);
-		x.removeEdge(4, 6);
+	//	x.removeEdge(4, 6);
 		System.out.println(test.shortestPath(1,6));
 		//x.removeNode(2);
 		g.drawFunctions(x);
 		System.out.println("done");
+		List<Integer> targets=new LinkedList();
+		targets.add(4);
+		targets.add(3);
+		targets.add(6);
+		targets.add(2);
 		
+		System.out.println("**");
+		List answertest=test.shortestPath(1, 5);
+		Iterator answer22=answertest.iterator();
+		while(answer22.hasNext()) {
+			nodedata pp=(nodedata) answer22.next();
+			System.out.print(pp.getKey());
+		}
+		System.out.println("**");
+		
+		
+		List answer=test.TSP(targets);
+		Iterator answer2=answer.iterator();
+		while(answer2.hasNext()) {
+			nodedata pp=(nodedata) answer2.next();
+			System.out.print(pp.getKey());
+		}
 		
 		
 		

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+import javax.xml.soap.Node;
 
 import java.util.Queue;
 import java.util.Stack;
@@ -145,7 +146,7 @@ public class Graph_Algo implements graph_algorithms{
 				if(q.peek().getWeight()+ed.getWeight()<wed) {
 
 					this.g.getHashnodes().get(ed.getDest()).setWeight(q.peek().getWeight()+ed.getWeight());
-					System.out.println("int to:"+ed.getDest() +"enter"+this.g.getHashnodes().get(ed.getDest()).getWeight());
+					//System.out.println("int to:"+ed.getDest() +"enter"+this.g.getHashnodes().get(ed.getDest()).getWeight());
 
 					//d.getDes().setWeight(q.peek().getWeight()+ed.getWeight());
 					ed.getDes().setWay(Integer.toString(q.peek().getKey()));
@@ -155,7 +156,7 @@ public class Graph_Algo implements graph_algorithms{
 				q.add(ed.getDes());
 			}	
 			//
-			q.peek().setTag(1);
+			//q.peek().setTag(1);//////29/12
 			q.poll();
 			count++;
 
@@ -171,24 +172,87 @@ public class Graph_Algo implements graph_algorithms{
 		// TODO Auto-generated method stub
 		if(
 				shortestPathDist(src, dest)==-1) return null;
-		List<node_data> shortt=new LinkedList<node_data>();
+		LinkedList<node_data> shortt=new LinkedList<node_data>();
 		nodedata move=(nodedata) this.g.getHashnodes().get(dest);
 		while(move!=this.g.getHashnodes().get(src)) {
-			shortt.add((nodedata) this.g.getHashnodes().get((Integer.valueOf(move.getKey()))));
+			shortt.push(((nodedata) this.g.getHashnodes().get((Integer.valueOf(move.getKey())))));
 			move=(nodedata) this.g.getHashnodes().get((Integer.valueOf(move.getWay())));
 		}
-		shortt.add((nodedata) this.g.getHashnodes().get(src));
+		shortt.push((nodedata) this.g.getHashnodes().get(src));
+		
 		return shortt;
 	}
 
+	
 	@Override
 	public List<node_data> TSP(List<Integer> targets) {
+		
 		// TODO Auto-generated method stub
+		Collection<node_data> p= this.g.getV();
+		Iterator zerocolor=p.iterator();
+		while(zerocolor.hasNext()) {
+			nodedata node=((nodedata) zerocolor.next());
+			node.setTag(0);
+		}
+		LinkedList<node_data> way = new LinkedList<node_data>();
+		//DGraph gnew=new DGraph(this.g);
+		int num = 0;
+		boolean flag=false;
+		Iterator<Integer> I=targets.iterator();
+		Integer start=I.next();
+		while(I.hasNext()) {
+			flag=false;
+			//Integer start=I.next();
+			System.out.println("start="+start);
+			this.g.getHashnodes().get(start).setTag(1);
+			Iterator<Integer> end=targets.iterator();
+			
+			while(end.hasNext()&&flag==false) {
+				Integer number=(Integer) end.next();
+				//System.out.println("number=="+number);
+				while(this.g.getHashnodes().get(number).getTag()==1&&end.hasNext()) {
+					 number= end.next();
+					 
+					 System.out.println("number="+number);
+					 System.out.println("*");
+					 
+				}
+				this.g.getHashnodes().get(number).setTag(1);
+				num=number;
+				flag=true;
+				
+				 
+			}
+			
+				
+			System.out.println("start="+start+", num="+num);
+			List<node_data> pass=shortestPath(start,num);
+			Iterator<node_data> c=pass.iterator();
+			while(c.hasNext()) {
+				node_data tocolor=(node_data) c.next();
+				this.g.getHashnodes().get(tocolor.getKey()).setTag(1);
+				way.add(tocolor);
+				System.out.println(tocolor.getKey());
+			}	
+			while(start!=num) {
+				start=I.next();
+			}
+			
+		}
+		
+		LinkedList<node_data> nontwice=new LinkedList<node_data>();
+		Iterator non =way.iterator();
+		while(non.hasNext()) {
+			nodedata c=(nodedata) non.next();
+			if(c!=nontwice.peekLast()) {
+				nontwice.add(c);
+			}
+		}
+		
+		
 
-
-
-
-		return null;
+		return nontwice;
+		
 	}
 
 	@Override
