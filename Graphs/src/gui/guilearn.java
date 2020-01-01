@@ -109,7 +109,7 @@ public class guilearn implements ActionListener {
 		 
 		Graph_Algo test=new Graph_Algo(x);
 		System.out.println(x.getCountedgeg());
-		Graph_GUI g=new Graph_GUI();
+		GraphGUIstddraw g=new GraphGUIstddraw();
 		//g.drawFunctions(x);
 		//System.out.println(x.removeNode(6));
 		System.out.println(x.removeEdge(3, 6));

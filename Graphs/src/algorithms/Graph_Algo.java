@@ -1,7 +1,12 @@
 package algorithms;
 
+import static org.junit.Assert.fail;
+
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collection;
@@ -24,6 +29,7 @@ import dataStructure.edgedata;
 import dataStructure.graph;
 import dataStructure.node_data;
 import dataStructure.nodedata;
+import gui.GraphGUIstddraw;
 import gui.Graph_GUI;
 import utils.Point3D;
 /**
@@ -35,63 +41,107 @@ import utils.Point3D;
 public class Graph_Algo implements graph_algorithms{
 
 	private DGraph g; 
+	public Graph_Algo() {
+		this.g=null; 
+	}
 
 	public Graph_Algo(DGraph g) {
 		this.g=new DGraph(g); 
 	}
+	public void setG(DGraph g) {
+		this.g = g;
+	}
+
 	@Override
 	public void init(graph g) {
 		// TODO Auto-generated method stub
+		this.g=new DGraph ((DGraph) g);
 
 	}
 
 	@Override
 	public void init(String file_name) {
 		// TODO Auto-generated method stub
+		try
+		{    
+			FileInputStream file = new FileInputStream(file_name); 
+			ObjectInputStream in = new ObjectInputStream(file); 
 
-		try {
-
-			FileInputStream fileIn = new FileInputStream(file_name);
-			ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-			Object obj = objectIn.readObject();
-			DGraph graf=new DGraph((DGraph)obj);
-			objectIn.close();
+			graph g = (graph)in.readObject(); 
 
 
-		} catch (Exception ex) {
-			System.out.println("cant read from this file");
+			init(g);
 
-		}
+
+
+		} 
+
+		catch(IOException ex) 
+		{ 
+			System.out.println("IOException is caught"); 
+		} 
+
+		catch(ClassNotFoundException ex) 
+		{ 
+			System.out.println("ClassNotFoundException is caught"); 
+		} 
+
 	}
+
+
+
+
 
 	@Override
 	public void save(String file_name) {
 		// TODO Auto-generated method stub
-		try {
 
-			FileOutputStream fileOut = new FileOutputStream(file_name);
-			ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
-			objectOut.writeObject(this);
-			objectOut.close();
-			System.out.println("The graph  was succesfully written to a file");
 
-		} catch (Exception ex) {
-			System.out.println("Cant write this graph out");
+		try
+		{    
+			FileOutputStream file = new FileOutputStream(new File(file_name)); 
+			ObjectOutputStream out = new ObjectOutputStream(file); 
+
+			out.writeObject(this); 
+
+			out.close(); 
+			file.close(); 
+			System.out.println("Object has been serialized"); 
+
+
+		}   
+		catch(FileNotFoundException e) {
+			System.out.println("file not found");
 		}
+		catch(IOException e) 
+		{ 
+			System.out.println("IOException is caught, cant save this graph"); 
+		} 
 
-	}
+	} 
+
+
+
 
 	@Override
 	public boolean isConnected() {
 		// TODO Auto-generated method stub
+		LinkedList<node_data> c=new LinkedList<node_data>( this.g.getV());
+		Iterator<node_data> p=c.iterator();
+		while(p.hasNext()) {
+			nodedata node=((nodedata) p.next());
+			node.setTag(0);;
+		}
 
 		Queue <nodedata>q=new LinkedList<>(); 
 		int count=0;
 		//this.g.getHashnodes().get(1);  //check if there is a place like this
-		q.add((nodedata) this.g.getHashnodes().get(1));
+		q.add((nodedata) this.g.getHashnodes().get(c.getFirst().getKey()));
 		while(!q.isEmpty()) {
 			nodedata nodeq=new nodedata(q.peek());
+			//System.out.println(nodeq.getKey());
 			Collection<edge_data> nabers=this.g.getHashedges().get(nodeq.getKey()).values();
+			if(nabers.size()==0) return false;
 			Iterator<edge_data> I=nabers.iterator();
 			while(I.hasNext()) {
 				edgedata edge=(edgedata) I.next();
@@ -179,15 +229,17 @@ public class Graph_Algo implements graph_algorithms{
 			move=(nodedata) this.g.getHashnodes().get((Integer.valueOf(move.getWay())));
 		}
 		shortt.push((nodedata) this.g.getHashnodes().get(src));
-		
+
 		return shortt;
 	}
 
-	
+
 	@Override
 	public List<node_data> TSP(List<Integer> targets) {
-		
+
 		// TODO Auto-generated method stub
+		if(!this.isConnected())
+			return TSPifnotconnect(this.g, targets);
 		Collection<node_data> p= this.g.getV();
 		Iterator zerocolor=p.iterator();
 		while(zerocolor.hasNext()) {
@@ -203,43 +255,43 @@ public class Graph_Algo implements graph_algorithms{
 		while(I.hasNext()) {
 			flag=false;
 			//Integer start=I.next();
-			System.out.println("start="+start);
+			//System.out.println("start="+start);
 			this.g.getHashnodes().get(start).setTag(1);
 			Iterator<Integer> end=targets.iterator();
-			
+
 			while(end.hasNext()&&flag==false) {
 				Integer number=(Integer) end.next();
 				//System.out.println("number=="+number);
 				while(this.g.getHashnodes().get(number).getTag()==1&&end.hasNext()) {
-					 number= end.next();
-					 
-					 System.out.println("number="+number);
-					 System.out.println("*");
-					 
+					number= end.next();
+
+					//					System.out.println("number="+number);
+					//					System.out.println("*");
+
 				}
 				this.g.getHashnodes().get(number).setTag(1);
 				num=number;
 				flag=true;
-				
-				 
+
+
 			}
-			
-				
-			System.out.println("start="+start+", num="+num);
+
+
+			//System.out.println("start="+start+", num="+num);
 			List<node_data> pass=shortestPath(start,num);
 			Iterator<node_data> c=pass.iterator();
 			while(c.hasNext()) {
 				node_data tocolor=(node_data) c.next();
 				this.g.getHashnodes().get(tocolor.getKey()).setTag(1);
 				way.add(tocolor);
-				System.out.println(tocolor.getKey());
+
 			}	
 			while(start!=num) {
 				start=I.next();
 			}
-			
+
 		}
-		
+
 		LinkedList<node_data> nontwice=new LinkedList<node_data>();
 		Iterator non =way.iterator();
 		while(non.hasNext()) {
@@ -248,12 +300,59 @@ public class Graph_Algo implements graph_algorithms{
 				nontwice.add(c);
 			}
 		}
-		
-		
+
+
 
 		return nontwice;
-		
+
 	}
+
+	public List<node_data> TSPifnotconnect(DGraph g,List<Integer> targets) {
+
+
+		DGraph graflist= new DGraph( g);
+	
+		Collection<node_data> c=new LinkedList<node_data>( graflist.getV());
+		Iterator<node_data> p=c.iterator();
+		System.out.println(c.size());
+		int i=0;
+		while(p.hasNext()) {
+			System.out.println("#");
+			nodedata node=((nodedata) p.next());
+			System.out.println(node.getKey());
+			if(!targets.contains(node.getKey())) {
+				graflist.removeNode(node.getKey());
+				System.out.println("remove");
+			}
+			else
+				System.out.println("didnt remove");
+
+		}
+		//		Collection<node_data> nodes=graflist.getV();
+		//		Iterator<node_data> I=nodes.iterator();
+		//		while(I.hasNext()) {
+		//			node_data current= (nodedata) I.next();
+		//			if(!targets.contains(current.getKey())) {
+		//				graflist.removeNode(current.getKey());
+		//			}
+		//		}
+		Graph_GUI gg=new Graph_GUI(graflist);
+		gg.setVisible(true);
+
+		Graph_Algo algo=new Graph_Algo(graflist);
+		if(algo.isConnected()==true) {
+			System.out.println("the new g is connect");
+			return algo.TSP(targets);
+		}
+		else {
+			System.out.println("not connect");
+			return null;
+			
+		}
+			
+
+	}
+
 
 	@Override
 	public graph copy() {
@@ -279,39 +378,30 @@ public class Graph_Algo implements graph_algorithms{
 		nodedata a=new nodedata(1,p1,0,0);
 		nodedata b=new nodedata(2,p2,0,0);
 		nodedata c=new nodedata(3,p3,0,0);
-		//		nodedata d=new nodedata(4,p4,0,0);
-		//		nodedata e=new nodedata(5,p5,0,0);
-		//		nodedata f=new nodedata(6,p6,0,0);
+
 
 
 		HashMap<Integer, node_data> hashnodes=new HashMap<Integer, node_data> ();
 		hashnodes.put(a.getKey(), a);
 		hashnodes.put(b.getKey(), b);
 		hashnodes.put(c.getKey(), c);
-		//hashnodes.put(d.getKey(), d);
-		//		hashnodes.put(e.getKey(), e);
-		//		hashnodes.put(f.getKey(), f);
+
 
 		edge_data aa=new edgedata(a,b,40,0);
-		//edge_data bb=new edgedata(b,a,20,0);
+
 		edge_data cc=new edgedata(b,c,20,0);
 		edge_data dd=new edgedata(a,c,80,0);
-		//edge_data eb=new edgedata(e,b,8,0);
-		//edge_data fe=new edgedata(f,e,5,0);
+
 
 		HashMap<Integer, edge_data>hash_a=new HashMap<Integer, edge_data>();
 		HashMap<Integer, edge_data>hash_b=new HashMap<Integer, edge_data>();
 		HashMap<Integer, edge_data>hash_c=new HashMap<Integer, edge_data>();
-		//		HashMap<Integer, edge_data>hash_d=new HashMap<Integer, edge_data>();
-		//		HashMap<Integer, edge_data>hash_e=new HashMap<Integer, edge_data>();
-		//		HashMap<Integer, edge_data>hash_f=new HashMap<Integer, edge_data>();
-		//		
+
 		hash_a.put(aa.getDest(), aa);
-		//hash_b.put(bb.getDest(), bb);
+
 		hash_b.put(cc.getDest(), cc);
 		hash_a.put(dd.getDest(), dd);
-		//hash_e.put(eb.getDest(), eb);
-		//hash_e.put(fe.getDest(), fe);
+
 
 
 		DGraph x=new DGraph();
@@ -320,31 +410,24 @@ public class Graph_Algo implements graph_algorithms{
 		hashedges.put(a.getKey(), hash_a);
 		hashedges.put(b.getKey(),hash_b);
 		hashedges.put(c.getKey(),hash_c);
-		//		hashedges.put(d.getKey(),hash_d);
-		//		hashedges.put(e.getKey(),hash_e);
-		//		hashedges.put(f.getKey(),hash_f);
+
 		x.setHashnodes(hashnodes);
 		x.setHashedges(hashedges);
 
 
-		Graph_GUI p=new Graph_GUI();
-		p.drawFunctions(x);
+
 		Graph_Algo test=new Graph_Algo(x);
-		System.out.println(test.isConnected());
-		System.out.println(test.shortestPathDist(3,1));
-		System.out.println((test.shortestPath(3, 1)));
-		if((test.shortestPath(3, 1))!=null) {
-			List<node_data> shortt=new LinkedList<node_data>((test.shortestPath(3, 1)));
-			Iterator I=shortt.iterator();
-			while(I.hasNext()) {
-				node_data noded=new nodedata ((nodedata) I.next());
-				System.out.println(noded.getKey());
-			}
-		}
-		test.save("testmatala3");
 
-		System.out.println("done");
+		test.save("rivkashshar.txt");
+		test.init("rivkashshar.txt");
 
+
+
+
+	}
+
+	public DGraph getG() {
+		return g;
 	}
 
 

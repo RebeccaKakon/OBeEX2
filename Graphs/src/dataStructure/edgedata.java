@@ -1,8 +1,10 @@
 package dataStructure;
 
+import java.io.Serializable;
+
 import utils.Point3D;
 
-public class edgedata implements edge_data{
+public class edgedata implements edge_data,Serializable{
 	
 	public nodedata getDes() {
 		return des;

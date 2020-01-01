@@ -1,5 +1,6 @@
 package dataStructure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class DGraph implements graph{
+public class DGraph implements graph,Serializable{
 
 	private HashMap<Integer,node_data> hashnodes;
 	private HashMap<Integer,HashMap<Integer,edge_data>> hashedges;
@@ -17,16 +18,25 @@ public class DGraph implements graph{
 
 
 	public DGraph(HashMap<Integer,node_data> hashnodes,HashMap<Integer,HashMap<Integer,edge_data>> hashedges) {
-		this.hashnodes=new HashMap<Integer,node_data>(hashnodes) ;
-		this.hashedges=new HashMap<Integer,HashMap<Integer,edge_data>>(hashedges);
+		this.hashnodes=new HashMap<Integer,node_data>() ;
+		this.hashnodes.putAll(hashnodes);
+		this.hashedges=new HashMap<Integer,HashMap<Integer,edge_data>>();
+		this.hashedges.putAll(hashedges);
 	}
+	//check||
 	public DGraph() {
 		this.hashnodes=new HashMap<Integer,node_data>() ;
 		this.hashedges=new HashMap<Integer,HashMap<Integer,edge_data>>();
 	}
 	public DGraph(DGraph other) {
-		this.hashnodes=new HashMap<Integer,node_data>(other.hashnodes) ;
-		this.hashedges=new HashMap<Integer,HashMap<Integer,edge_data>>(other.hashedges);
+		this.hashnodes=new HashMap<Integer,node_data>();
+		hashnodes.putAll(other.hashnodes);
+		
+		this.hashedges=new HashMap<Integer,HashMap<Integer,edge_data>>();
+		this.hashedges.putAll(other.hashedges);
+		//this.hashnodes=new HashMap<Integer,node_data>(other.hashnodes) ;
+		//this.hashedges=new HashMap<Integer,HashMap<Integer,edge_data>>(other.hashedges);
+		this.countedgeg=other.countedgeg;
 	}
 
 
@@ -57,7 +67,7 @@ public class DGraph implements graph{
 	@Override
 	public void addNode(node_data n) {  //check
 		// TODO Auto-generated method stub
-
+		if(hashnodes.get(n.getKey())!=null) return;
 		hashnodes.put(n.getKey(), (nodedata)n);
 		HashMap<Integer,edge_data> value= new HashMap<Integer,edge_data>();
 		hashedges.put(n.getKey(), value);
