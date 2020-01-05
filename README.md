@@ -8,12 +8,11 @@ and do not worry if you want to built your own graph or you want to see how the 
 we have a Gui class that will amaze you .
 
 This project represent 5 calsses:
-Node Class - will creat our node of the graph
-Edge Class - will creat our edge of the graph
+nodedata Class - will creat our node of the graph
+edgedata Class - will creat our edge of the graph
 DGraph Class - will build a graph that that its built by points and edges. each graph contain a collection of node (with the help of 
-node class) and a collectiom of edges (with the help of edges class)
+nodedata class) and a collectiom of edges (with the help of edgedata class)
 GUI Class-will draw the graph.
 Graph_Algo Class- In this class we have difrent algoritems that solve diffrents problems on our graph! 
 
 if you want more information about our project you can go read our wonderful wiki. 
-
